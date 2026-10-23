@@ -16,23 +16,26 @@ jobs:
   import:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Download pages and images
         run: |
-          set -euo pipefail
+          set -uo pipefail
           base=https://futuristica.yolasite.com
+          ua="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36"
+          get() { code=$(curl -sSL -A "$ua" -o "$2" -w '%{http_code}' "$1"); echo "$code $1"; [ "$code" = 200 ] || { rm -f "$2"; echo "::warning::HTTP $code for $1"; }; }
           mkdir -p images/portfolio _yola
           for p in "" portfolio.php products.php contact-us.php; do
-            curl -fsSL "$base/$p" -o "_yola/${p:-index.php}.html"
+            get "$base/$p" "_yola/${p:-index.php}.html"
           done
-          curl -fsSL "$base/resources/Brian%20Futuristica%20Logo001%20%282%29.jpg" -o images/logo.jpg
+          get "$base/resources/Brian%20Futuristica%20Logo001%20%282%29.jpg" images/logo.jpg
           while read -r f; do
             [ -z "$f" ] && continue
             name=$(echo "$f" | sed 's/%20/-/g' | tr 'A-Z' 'a-z')
             [ -f "images/portfolio/$name" ] && continue
-            curl -fsSL "$base/resources/$f" -o "images/portfolio/$name" || echo "::warning::failed $f"
+            get "$base/resources/$f" "images/portfolio/$name"
           done < photos.txt
+          ls -la images images/portfolio _yola
 
       - name: Commit
         run: |
