@@ -1,0 +1,137 @@
+:root {
+  --bg: #0f1115;
+  --surface: #181b22;
+  --text: #e8e9ec;
+  --muted: #a3a7b1;
+  --accent: #4fc3f7;
+  --border: #2a2e38;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+}
+
+a { color: var(--accent); }
+
+.site-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.site-header .inner,
+main,
+.site-footer {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.site-header .inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.site-title {
+  margin: 0;
+  font-size: 1.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.site-title a { color: var(--text); text-decoration: none; }
+
+nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+nav a {
+  display: block;
+  padding: 6px 12px;
+  border-radius: 4px;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+nav a:hover { color: var(--text); }
+nav a[aria-current="page"] { color: var(--bg); background: var(--accent); }
+
+main { padding-top: 32px; padding-bottom: 48px; }
+
+h2 { margin-top: 0; }
+
+.logo {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto 32px;
+  border-radius: 6px;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.gallery a { display: block; aspect-ratio: 1; overflow: hidden; border-radius: 4px; background: var(--surface); }
+
+.gallery img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s;
+}
+
+.gallery a:hover img { transform: scale(1.04); }
+
+.products { padding-left: 1.2em; }
+.products li { margin-bottom: 8px; }
+
+form { display: grid; gap: 14px; max-width: 520px; }
+
+label { display: grid; gap: 4px; color: var(--muted); }
+
+input, textarea {
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+button {
+  justify-self: start;
+  padding: 10px 24px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--accent);
+  color: var(--bg);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.site-footer {
+  padding-top: 16px;
+  padding-bottom: 24px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.9rem;
+}

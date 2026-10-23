@@ -1,0 +1,43 @@
+# One-time import: downloads the photos and original page HTML from the old
+# Yola site and commits them. Safe to delete once the images are in the repo.
+name: Import from Yola
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/import-from-yola.yml
+      - photos.txt
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download pages and images
+        run: |
+          set -euo pipefail
+          base=https://futuristica.yolasite.com
+          mkdir -p images/portfolio _yola
+          for p in "" portfolio.php products.php contact-us.php; do
+            curl -fsSL "$base/$p" -o "_yola/${p:-index.php}.html"
+          done
+          curl -fsSL "$base/resources/Brian%20Futuristica%20Logo001%20%282%29.jpg" -o images/logo.jpg
+          while read -r f; do
+            [ -z "$f" ] && continue
+            name=$(echo "$f" | sed 's/%20/-/g' | tr 'A-Z' 'a-z')
+            [ -f "images/portfolio/$name" ] && continue
+            curl -fsSL "$base/resources/$f" -o "images/portfolio/$name" || echo "::warning::failed $f"
+          done < photos.txt
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images _yola
+          git diff --cached --quiet || git commit -m "Import images and pages from Yola"
+          git push
